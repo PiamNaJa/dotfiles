@@ -42,4 +42,5 @@ export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 eval "$(zoxide init zsh)"
 alias cdr=_CDR
 alias cdd="_CDR && FZF_CD"
-alias killport='lsof -t -i tcp:$1 | xargs kill'    
+alias killport="lsof -i :$1 | awk 'NR!=1 {print $2}' | xargs kill"
+alias mkdir='mkdir -p'

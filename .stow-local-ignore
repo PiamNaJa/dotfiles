@@ -14,4 +14,3 @@ _darcs
 (?i)^/README.*
 (?i)^/LICENSE.*
 (?i)^/COPYING
-.config/ghostty

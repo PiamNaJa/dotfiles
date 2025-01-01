@@ -44,3 +44,7 @@ alias cdr=_CDR
 alias cdd="_CDR && FZF_CD"
 alias killport="lsof -i :$1 | awk 'NR!=1 {print $2}' | xargs kill"
 alias mkdir='mkdir -p'
+alias ls='eza --icons=auto'
+alias lt='eza --tree --icons=auto'
+alias v='nvim'
+alias vdiff='nvim -d'

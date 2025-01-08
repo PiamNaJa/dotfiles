@@ -1,30 +1,40 @@
 return {
-    {
-        "williamboman/mason.nvim",
-        config = function()
-            require("mason").setup()
-        end
+  {
+    "neovim/nvim-lspconfig",
+    dependencies = {
+      "jose-elias-alvarez/typescript.nvim",
+      init = function()
+        require("lazyvim.util").lsp.on_attach(function(_, buffer)
+          vim.keymap.set("n", "<leader>co", "TypescriptOrganizeImports", { buffer = buffer, desc = "Organize Imports" })
+          vim.keymap.set("n", "<leader>cR", "TypescriptRenameFile", { desc = "Rename File", buffer = buffer })
+        end)
+      end,
     },
-    {
-        "williamboman/mason-lspconfig.nvim",
-        config = function()
-            require("mason-lspconfig").setup({
-                ensure_installed = { "lua_ls", "ts_ls" }
-            })
-        end
+    ---@class PluginLspOpts
+    opts = {
+      ---@type lspconfig.options
+      servers = {
+        tsserver = {},
+      },
+      ---@type table<string, fun(server:string, opts:_.lspconfig.options):boolean?>
+      setup = {
+        tsserver = function(_, opts)
+          require("typescript").setup({ server = opts })
+          return true
+        end,
+      },
     },
-    {
-        "neovim/nvim-lspconfig",
-        lazy = false,
-        config = function()
-            local capabilities = require('cmp_nvim_lsp').default_capabilities()
-            local lspconfig = require("lspconfig")
-            lspconfig.lua_ls.setup({
-                capabilities = capabilities,
-            })
-            lspconfig.ts_ls.setup({
-                capabilities = capabilities,
-            })
-        end
-    }
+  },
+  {
+    "williamboman/mason.nvim",
+    opts = {
+      ensure_installed = {
+        "stylua",
+        "shellcheck",
+        "shfmt",
+        "flake8",
+        "prettier"
+      },
+    },
+  },
 }

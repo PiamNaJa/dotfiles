@@ -15,3 +15,4 @@ _darcs
 (?i)^/LICENSE.*
 (?i)^/COPYING
 .DS_Store
+.vscode

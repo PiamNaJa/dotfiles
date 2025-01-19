@@ -10,6 +10,17 @@ FZF_CD() {
 	) && test $? -eq 0 && cd $dr
 }
 
+lg() {
+    export LAZYGIT_NEW_DIR_FILE=~/.lazygit/newdir
+
+    lazygit "$@"
+
+    if [ -f $LAZYGIT_NEW_DIR_FILE ]; then
+            cd "$(cat $LAZYGIT_NEW_DIR_FILE)"
+            rm -f $LAZYGIT_NEW_DIR_FILE > /dev/null
+    fi
+}
+
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="robbyrussell"
 plugins=(git)
@@ -48,3 +59,4 @@ alias ls='eza --icons=auto'
 alias lt='eza --tree --icons=auto'
 alias v='nvim'
 alias vdiff='nvim -d'
+alias yz='yazi'

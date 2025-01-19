@@ -14,3 +14,4 @@ _darcs
 (?i)^/README.*
 (?i)^/LICENSE.*
 (?i)^/COPYING
+.DS_Store

@@ -69,7 +69,7 @@ zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
 zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
 _evalcache fzf --zsh
-_evalcache zoxide init --cmd cd zsh
+_evalcache zoxide init zsh
 
 
 export PATH=$PATH:$HOME/Library/Android/sdk/platform-tools

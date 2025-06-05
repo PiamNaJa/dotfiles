@@ -24,12 +24,6 @@ chsh -s /bin/zsh
 brew install neovim git stow fd fzf fork maccy postman yazi ffmpeg sevenzip jq poppler fd ripgrep zoxide imagemagick font-symbols-only-nerd-font bat nvm eza
 ```
 
-## Themes
-
-```bash
-ya pack -a yazi-rs/flavors:catppuccin-macchiato
-```
-
 ## Clone Dotfiles
 
 ```bash

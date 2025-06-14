@@ -75,6 +75,9 @@ export ANDROID_NDK_HOME="$HOME/Library/Android/sdk/ndk/21.4.7075529"
 export GOPATH="$HOME/go"
 export PATH="$GOPATH/bin:$HOME/.local/bin:$PATH"
 export PATH="/usr/local/opt/libpq/bin:/opt/homebrew/opt/libpq/bin:$PATH"
+export PATH="/opt/homebrew/opt/postgresql@17/bin:$PATH"
+export LDFLAGS="-L/opt/homebrew/opt/postgresql@17/lib"
+export CPPFLAGS="-I/opt/homebrew/opt/postgresql@17/include"
 
 # Aliases
 alias cdr=_CDR
@@ -94,4 +97,4 @@ alias fabric="fabric --stream"
 alias gencm="git diff --staged | fabric -p summarize_git_diff"
 alias sum="pbpaste | fabric -p summarize"
 alias askcode="fabric -p coding_master"
-alias genpr="git --no-pager diff main | fabric -p write_pull-request"
+alias genpr="git --no-pager diff main | fabric -p write_pull-request"export PATH="/opt/homebrew/opt/postgresql@17/bin:$PATH"

@@ -83,6 +83,7 @@ zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
 zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 _evalcache fzf --zsh
 _evalcache zoxide init zsh
+_evalcache mise activate zsh
 
 # Environment Variables
 export PATH="$HOME/Library/Android/sdk/platform-tools:$HOME/Library/Android/sdk/build-tools/35.0.0:$HOME/Library/Android/sdk/tools/bin:$PATH"
@@ -115,5 +116,3 @@ alias askcode="fabric -p coding_master"
 alias genpr="git --no-pager diff main | fabric -p write_pull-request"
 alias now='echo $(( $(date +%s)*1000 + $(date +%N)/1000000 ))'
 alias ghwf=GHWF
-
-eval "$(mise activate zsh)"

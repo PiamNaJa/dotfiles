@@ -13,6 +13,21 @@ lg() {
     [ -f "$LAZYGIT_NEW_DIR_FILE" ] && cd "$(cat "$LAZYGIT_NEW_DIR_FILE")" && rm -f "$LAZYGIT_NEW_DIR_FILE"
 }
 
+GHWF() {
+    local selected_files
+    selected_files=$(gh workflow list --limit 100 | fzf -m --preview='' | cut -f1)
+
+  if [[ -z "$selected_files" ]]; then
+    echo "🚫 No workflow selected."
+    return 1
+  fi
+
+  for workflow_file in ${(f)selected_files}; do
+    echo "▶️ Running workflow '$workflow_file' on ref production"
+    gh workflow run "$workflow_file" --ref production
+  done
+}
+
 # Oh-My-Zsh Setup
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="robbyrussell"
@@ -98,3 +113,7 @@ alias gencm="git diff --staged | fabric -p summarize_git_diff"
 alias sum="pbpaste | fabric -p summarize"
 alias askcode="fabric -p coding_master"
 alias genpr="git --no-pager diff main | fabric -p write_pull-request"
+alias now='echo $(( $(date +%s)*1000 + $(date +%N)/1000000 ))'
+alias ghwf=GHWF
+
+eval "$(mise activate zsh)"

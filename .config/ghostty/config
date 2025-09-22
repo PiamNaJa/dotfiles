@@ -1,5 +1,5 @@
-# theme = iTerm2 Default
-theme = Bluloco Light
+theme = iTerm2 Default
+# theme = Bluloco Light
 keybind = cmd+shift+space=toggle_quick_terminal
 keybind = cmd+shift+,=reload_config
 background-opacity = 0.65

@@ -24,8 +24,10 @@ GHWF() {
 
   for workflow_file in ${(f)selected_files}; do
     echo "▶️ Running workflow '$workflow_file' on ref production"
-    gh workflow run "$workflow_file" --ref production
+    gh workflow run "$workflow_file" --ref production &
   done
+  wait
+  echo "✅ All selected workflows have been triggered."
 }
 
 # Oh-My-Zsh Setup

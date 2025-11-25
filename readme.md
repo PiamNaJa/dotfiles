@@ -28,7 +28,7 @@ brew install neovim git stow fd fzf fork maccy postman yazi ffmpeg sevenzip jq p
 
 ```bash
 cd ~
-git clone https://github.com/PiamNaJa/dotfiles.git
+git clone --recursive https://github.com/PiamNaJa/dotfiles.git
 cd dotfiles
 stow .
 ```

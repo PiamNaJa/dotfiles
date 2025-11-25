@@ -3,7 +3,7 @@
   "name": "epoch-conversion",
   "title": "Epoch Conversion",
   "description": "Epoch & Unix Timestamp Conversion Tools",
-  "icon": "extension-icon.png",
+  "icon": "assets/extension-icon.png",
   "author": "piamnaja",
   "platforms": [
     "macOS",
@@ -16,9 +16,9 @@
   "commands": [
     {
       "name": "epoch",
-      "title": "epoch",
-      "description": "",
-      "mode": "no-view"
+      "title": "Epoch Converter",
+      "description": "Convert timestamps and dates",
+      "mode": "view"
     }
   ],
   "dependencies": {

@@ -22,9 +22,14 @@ GHWF() {
     return 1
   fi
 
+  local target_ref="production"
+  if ! gh api "repos/:owner/:repo/branches/production" --silent >/dev/null 2>&1; then
+    target_ref="main"
+  fi
+
   for workflow_file in ${(f)selected_files}; do
-    echo "▶️ Running workflow '$workflow_file' on ref production"
-    gh workflow run "$workflow_file" --ref production &
+    echo "▶️ Running workflow '$workflow_file' on ref $target_ref"
+    gh workflow run "$workflow_file" --ref "$target_ref" &
   done
   wait
   echo "✅ All selected workflows have been triggered."

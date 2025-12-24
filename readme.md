@@ -21,7 +21,7 @@ chsh -s /bin/zsh
 ## Install Package
 
 ```bash
-brew install neovim git stow fd fzf fork maccy postman yazi ffmpeg sevenzip jq poppler fd ripgrep zoxide imagemagick font-symbols-only-nerd-font bat nvm eza
+brew install neovim git stow fd fzf fork maccy postman yazi ffmpeg sevenzip jq poppler fd ripgrep zoxide imagemagick font-symbols-only-nerd-font bat mise eza
 ```
 
 ## Clone Dotfiles

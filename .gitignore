@@ -2,3 +2,4 @@
 .config/yazi/flavors
 .vscode/
 .aider*
+.config/github-copilot/

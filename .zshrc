@@ -35,6 +35,10 @@ GHWF() {
   echo "✅ All selected workflows have been triggered."
 }
 
+KILL_PORT() {
+    lsof -t -i :"$1" | xargs kill
+}
+
 # Oh-My-Zsh Setup
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="robbyrussell"
@@ -52,7 +56,6 @@ zinit light zsh-users/zsh-autosuggestions
 zinit light zsh-users/zsh-syntax-highlighting
 zinit light zsh-users/zsh-completions
 zinit light Aloxaf/fzf-tab
-zinit light lukechilds/zsh-nvm
 zinit light mroth/evalcache
 
 # Oh-My-Zsh Plugins
@@ -67,12 +70,8 @@ zinit snippet OMZP::command-not-found
 
 autoload -Uz _zinit
 
-# NVM Config
-export NVM_LAZY_LOAD=true
-export NVM_COMPLETION=true
-
 # Oh-My-Zsh Plugins
-plugins=(evalcache zsh-nvm git npm docker docker-compose terraform)
+plugins=(evalcache git mise npm docker docker-compose terraform)
 
 # Enable ngrok completion if available
 command -v ngrok &>/dev/null && _evalcache ngrok completion
@@ -85,7 +84,6 @@ unalias zi
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 zstyle ':completion:*' menu no
-zstyle ':omz:plugins:nvm' lazy yes
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
 zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 _evalcache fzf --zsh
@@ -105,7 +103,7 @@ export CPPFLAGS="-I/opt/homebrew/opt/postgresql@17/include"
 # Aliases
 alias cdr=_CDR
 alias cdd="_CDR && FZF_CD"
-alias killport="lsof -i :\$1 | awk 'NR!=1 {print \$2}' | xargs kill"
+alias killport=KILL_PORT
 alias mkdir='mkdir -p'
 alias ls='eza --icons=auto'
 alias lt='eza --tree --icons=auto'
@@ -115,11 +113,5 @@ alias yz='yazi'
 alias cat='bat'
 alias c='clear'
 
-# Fabric Aliases
-alias fabric="fabric --stream"
-alias gencm="git diff --staged | fabric -p summarize_git_diff"
-alias sum="pbpaste | fabric -p summarize"
-alias askcode="fabric -p coding_master"
-alias genpr="git --no-pager diff main | fabric -p write_pull-request"
 alias now='echo $(( $(date +%s)*1000 + $(date +%N)/1000000 ))'
 alias ghwf=GHWF

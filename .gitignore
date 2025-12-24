@@ -3,3 +3,4 @@
 .vscode/
 .aider*
 .config/github-copilot/
+.config/raycast

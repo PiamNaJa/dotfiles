@@ -95,10 +95,17 @@ export PATH="$HOME/Library/Android/sdk/platform-tools:$HOME/Library/Android/sdk/
 export ANDROID_NDK_HOME="$HOME/Library/Android/sdk/ndk/21.4.7075529"
 export GOPATH="$HOME/go"
 export PATH="$GOPATH/bin:$HOME/.local/bin:$PATH"
-export PATH="/usr/local/opt/libpq/bin:/opt/homebrew/opt/libpq/bin:$PATH"
-export PATH="/opt/homebrew/opt/postgresql@17/bin:$PATH"
-export LDFLAGS="-L/opt/homebrew/opt/postgresql@17/lib"
-export CPPFLAGS="-I/opt/homebrew/opt/postgresql@17/include"
+export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
+export LDFLAGS="-L/opt/homebrew/opt/libpq/lib"
+export CPPFLAGS="-I/opt/homebrew/opt/libpq/include"
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/p/.lmstudio/bin"
+export MLX_ENABLE_FAST_KERNELS=1
+export MLX_GPU_MEMORY_FRACTION=0.90
+# End of LM Studio CLI section
+
+
 
 # Aliases
 alias cdr=_CDR
@@ -112,6 +119,10 @@ alias vdiff='nvim -d'
 alias yz='yazi'
 alias cat='bat'
 alias c='clear'
+alias gty='open -a "ghostty" "$(pwd)"'
 
 alias now='echo $(( $(date +%s)*1000 + $(date +%N)/1000000 ))'
 alias ghwf=GHWF
+
+# Added by Antigravity
+export PATH="/Users/p/.antigravity/antigravity/bin:$PATH"

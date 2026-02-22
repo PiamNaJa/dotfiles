@@ -2,7 +2,8 @@
   "$schema": "https://opencode.ai/config.json",
   "plugin": [
     "opencode-antigravity-auth@latest",
-    "@franlol/opencode-md-table-formatter@0.0.3"
+    "@franlol/opencode-md-table-formatter@0.0.3",
+    "oh-my-opencode@latest"
   ],
   "mcp": {
     "sequential-thinking": {
@@ -13,7 +14,22 @@
       ],
       "type": "local",
       "enabled": true
-    }
+    },
+    // "memory": {
+    //   "command": [
+    //     "bun",
+    //     "run",
+    //     "/Users/p/Documents/code/mcp-memory-os/src/server.ts"
+    //   ],
+    //   "type": "local",
+    //   "enabled": true,
+    //   "environment": {
+    //     "VECTOR_DB_PATH": "/Users/p/Documents/code/mcp-memory-os/data/vector.db",
+    //     "GRAPH_DB_PATH": "/Users/p/Documents/code/mcp-memory-os/data/graph.db",
+    //     "QDRANT_URL": "http://localhost:6333",
+    //     "QDRANT_COLLECTION": "mcp-memory"
+    //   }
+    // }
   },
   "provider": {
     "google": {

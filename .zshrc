@@ -35,6 +35,180 @@ GHWF() {
     echo "✅ All selected workflows have been triggered."
 }
 
+WORK() {
+
+    # 1. Handle optional "days" argument (default: 1 day)
+
+    local days=${1:-1}
+
+    local start_dir="$PWD"
+
+
+
+    # Define Colors
+
+    local B_BLUE='\033[1;34m'
+
+    local B_GREEN='\033[1;32m'
+
+    local B_YELLOW='\033[1;33m'
+
+    local CYAN='\033[0;36m'
+
+    local DIM='\033[2m'
+
+    local NC='\033[0m' # No Color
+
+
+
+    # --- PART 1: COMMITTED WORK ---
+
+    echo -e "${B_BLUE}==========================================${NC}"
+
+    echo -e " 📅 COMMITTED WORK (Last $days Days)"
+
+    echo -e "${B_BLUE}==========================================${NC}"
+
+
+
+    local found_commits=0
+
+
+
+    # Optimization: Find .git folders 2 levels deep
+
+    while IFS= read -r git_dir; do
+
+        local repo_dir=$(dirname "$git_dir")
+
+        cd "$repo_dir" || continue
+
+
+
+        local current_author=$(git config user.name)
+
+        [[ -z "$current_author" ]] && current_author=$(git config --global user.name)
+
+
+
+        # Run git log
+
+        local logs=$(git log --all --color=always --no-merges --since="${days} days ago" --author="$current_author" --format="%C(yellow)%h%Creset - %s %C(dim white)(%cr)%Creset %C(cyan)<%an>%Creset" 2>/dev/null)
+
+
+
+        if [[ -n "$logs" ]]; then
+
+            found_commits=1
+
+            echo -e "${B_GREEN}📂 $repo_dir${NC}"
+
+            echo "$logs"
+
+            echo ""
+
+        fi
+
+        cd "$start_dir"
+
+    done < <(find "$PWD" -maxdepth 2 -name .git -type d)
+
+
+
+    [[ $found_commits -eq 0 ]] && echo "💤 No commits found in the last $days days."
+
+
+
+    # --- PART 2: UNCOMMITTED WORK ---
+
+    echo ""
+
+    echo -e "${B_YELLOW}==========================================${NC}"
+
+    echo -e " 🚧 UNCOMMITTED WORK (Files modified in last $days days)"
+
+    echo -e "${B_YELLOW}==========================================${NC}"
+
+
+
+    typeset -U dirty_repos
+
+    dirty_repos=()
+
+
+
+    # FIX: Use a Zsh Array for the arguments
+
+    # This splits "-mtime" and "-1" into separate items safely
+
+    local time_arg=(-mtime "-${days}")
+
+
+
+    # 1. Find modified files
+
+    while IFS= read -r file_path; do
+
+        local curr_dir=$(dirname "$file_path")
+
+        
+
+        while [[ "$curr_dir" != "$start_dir" && "$curr_dir" != "/" ]]; do
+
+            if [[ -d "$curr_dir/.git" ]]; then
+
+                dirty_repos+=("$curr_dir")
+
+                break
+
+            fi
+
+            curr_dir=$(dirname "$curr_dir")
+
+        done
+
+    # FIX: Expand the array using "${time_arg[@]}"
+
+    done < <(find "$PWD" -maxdepth 4 -type d \( -name node_modules -o -name .git -o -name dist -o -name build -o -name coverage -o -name .next \) -prune -o -type f "${time_arg[@]}" -print)
+
+
+
+    # 3. Check Status
+
+    local found_wip=0
+
+    for repo in "${dirty_repos[@]}"; do
+
+        cd "$repo" || continue
+
+        
+
+        local status_out=$(git status -s)
+
+        
+
+        if [[ -n "$status_out" ]]; then
+
+            found_wip=1
+
+            echo -e "${B_GREEN}📂 $repo${NC}"
+
+            git -c color.status=always status -s
+
+            echo -e "${DIM}---------------------------------${NC}"
+
+        fi
+
+        cd "$start_dir"
+
+    done
+
+
+
+    [[ $found_wip -eq 0 ]] && echo "✨ No files modified in the last $days days."
+
+}
+
 KILL_PORT() {
     lsof -t -i :"$1" | xargs kill
 }
@@ -117,3 +291,5 @@ alias c='clear'
 alias gty='open -a "ghostty" "$(pwd)"'
 alias now='echo $(( $(date +%s)*1000 + $(date +%N)/1000000 ))'
 alias ghwf=GHWF
+alias work=WORK
+alias openclaw='cd $HOME/Documents/code/openclaw && docker compose run --rm openclaw-cli'

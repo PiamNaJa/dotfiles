@@ -6,3 +6,4 @@
 .config/raycast
 .config/mise/
 .config/gh/
+**/.claude/settings.local.json

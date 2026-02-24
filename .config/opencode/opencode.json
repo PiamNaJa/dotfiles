@@ -14,7 +14,8 @@
       ],
       "type": "local",
       "enabled": true
-    },
+    }
+    // ,
     // "memory": {
     //   "command": [
     //     "bun",

@@ -210,7 +210,7 @@ WORK() {
 }
 
 KILL_PORT() {
-    lsof -t -i :"$1" | xargs kill
+    kill -9 $(lsof -t -i:"$1")
 }
 
 # Oh-My-Zsh

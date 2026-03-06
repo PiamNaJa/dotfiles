@@ -14,6 +14,14 @@ lg() {
 }
 
 GHWF() {
+    local selected_branch
+    selected_branch=$(git branch --list 'main*' 'master*' 'develop*' 'dev*' 'prod*' 'production*' 'staging*' 'feature*' 'release*' 'hotfix*' 'test*' | sed 's|remotes/origin/||' | sort -u | fzf --border-label='Select branch')
+
+    if [[ -z "$selected_branch" ]]; then
+        echo "🚫 No branch selected."
+        return 1
+    fi
+
     local selected_files
     selected_files=$(gh workflow list --limit 100 | fzf -m --preview='' | cut -f1)
 
@@ -22,14 +30,9 @@ GHWF() {
         return 1
     fi
 
-    local target_ref="production"
-    if ! gh api "repos/:owner/:repo/branches/production" --silent >/dev/null 2>&1; then
-        target_ref="main"
-    fi
-
     for workflow_file in ${(f)selected_files}; do
-        echo "▶️ Running workflow '$workflow_file' on ref $target_ref"
-        gh workflow run "$workflow_file" --ref "$target_ref" &
+        echo "▶️ Running workflow '$workflow_file' on branch $selected_branch"
+        gh workflow run "$workflow_file" --ref "$selected_branch" &
     done
     wait
     echo "✅ All selected workflows have been triggered."

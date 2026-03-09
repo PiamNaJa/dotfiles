@@ -15,7 +15,7 @@ lg() {
 
 GHWF() {
     local selected_branch
-    selected_branch=$(git branch --list 'main*' 'master*' 'develop*' 'dev*' 'prod*' 'production*' 'staging*' 'feature*' 'release*' 'hotfix*' 'test*' | sed 's|remotes/origin/||' | sort -u | fzf --border-label='Select branch')
+    selected_branch=$(git branch --list 'main*' 'master*' 'develop*' 'dev*' 'prod*' 'production*' 'staging*' 'feature*' 'release*' 'hotfix*' 'test*' | sed 's/^[* ] //' | sed 's|remotes/origin/||' | sort -u | fzf --border-label='Select branch')
 
     if [[ -z "$selected_branch" ]]; then
         echo "🚫 No branch selected."
@@ -296,3 +296,5 @@ alias now='echo $(( $(date +%s)*1000 + $(date +%N)/1000000 ))'
 alias ghwf=GHWF
 alias work=WORK
 alias openclaw='cd $HOME/Documents/code/openclaw && docker compose run --rm openclaw-cli'
+# Oracle Skills CLI
+export PATH="$HOME/.oracle-skills/bin:$PATH"

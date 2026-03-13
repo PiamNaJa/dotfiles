@@ -7,3 +7,4 @@
 .config/mise/
 .config/gh/
 **/.claude/settings.local.json
+.claude.json

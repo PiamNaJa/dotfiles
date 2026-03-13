@@ -14,18 +14,31 @@ lg() {
 }
 
 GHWF() {
+    setopt local_options no_monitor
+    local tmpfile=$(mktemp)
+
+    # Pre-fetch workflows in background while user picks a branch
+    gh workflow list --limit 100 > "$tmpfile" &
+    local bg_pid=$!
+
     local selected_branch
     selected_branch=$(git branch --list 'main*' 'master*' 'develop*' 'dev*' 'prod*' 'production*' 'staging*' 'feature*' 'release*' 'hotfix*' 'test*' | sed 's/^[* ] //' | sed 's|remotes/origin/||' | sort -u | fzf --border-label='Select branch')
 
     if [[ -z "$selected_branch" ]]; then
+        kill $bg_pid 2>/dev/null
+        rm -f "$tmpfile"
         echo "🚫 No branch selected."
         return 1
     fi
 
+    # Wait for workflow fetch to finish (likely already done)
+    wait $bg_pid
+
     local selected_files
-    selected_files=$(gh workflow list --limit 100 | fzf -m --preview='' | cut -f1)
+    selected_files=$(cat "$tmpfile" | fzf -m --preview='' | cut -f1)
 
     if [[ -z "$selected_files" ]]; then
+        rm -f "$tmpfile"
         echo "🚫 No workflow selected."
         return 1
     fi
@@ -35,6 +48,7 @@ GHWF() {
         gh workflow run "$workflow_file" --ref "$selected_branch" &
     done
     wait
+    rm -f "$tmpfile"
     echo "✅ All selected workflows have been triggered."
 }
 

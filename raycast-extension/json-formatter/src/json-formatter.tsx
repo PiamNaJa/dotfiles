@@ -10,10 +10,14 @@ import {
   getPreferenceValues,
   useNavigation,
 } from "@raycast/api";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 interface Preferences {
   indentSize: string;
+}
+
+interface FormValues {
+  inputJson: string;
 }
 
 function FormattedJsonView({ formattedJson }: { formattedJson: string }) {
@@ -44,9 +48,9 @@ ${formattedJson}
 }
 
 export default function Command() {
-  const [inputJson, setInputJson] = useState<string>("");
   const [error, setError] = useState<string>("");
   const { push } = useNavigation();
+  const textAreaRef = useRef<Form.TextArea>(null);
   const preferences = getPreferenceValues<Preferences>();
   const indentSize = parseInt(preferences.indentSize || "2", 10);
 
@@ -68,7 +72,8 @@ export default function Command() {
     }
   }
 
-  function formatAndShow() {
+  function formatAndShow(values: FormValues) {
+    const inputJson = values.inputJson;
     if (!inputJson.trim()) {
       showToast({
         style: Toast.Style.Failure,
@@ -98,16 +103,16 @@ export default function Command() {
     <Form
       actions={
         <ActionPanel>
-          <Action
+          <Action.SubmitForm
             title="Format JSON"
             shortcut={{ modifiers: ["cmd", "shift"], key: "return" }}
-            onAction={formatAndShow}
+            onSubmit={formatAndShow}
           />
           <Action
             title="Clear"
             shortcut={{ modifiers: ["cmd", "shift"], key: "x" }}
             onAction={() => {
-              setInputJson("");
+              textAreaRef.current?.reset();
               setError("");
             }}
           />
@@ -115,11 +120,10 @@ export default function Command() {
       }
     >
       <Form.TextArea
+        ref={textAreaRef}
         id="inputJson"
         title="Input JSON"
         placeholder="Paste your JSON here..."
-        value={inputJson}
-        onChange={setInputJson}
       />
 
       {error && <Form.Description title="❌ Error" text={error} />}

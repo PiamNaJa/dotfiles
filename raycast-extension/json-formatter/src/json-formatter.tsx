@@ -20,6 +20,10 @@ interface FormValues {
   inputJson: string;
 }
 
+// The markdown highlighter chokes on very large code blocks, so the in-app
+// preview is capped. The Copy action always copies the full formatted JSON.
+const PREVIEW_LIMIT = 20_000;
+
 function FormattedJsonView({ formattedJson }: { formattedJson: string }) {
   const { pop } = useNavigation();
 
@@ -28,10 +32,16 @@ function FormattedJsonView({ formattedJson }: { formattedJson: string }) {
     await showHUD("✅ Formatted JSON copied to clipboard!");
   }
 
-  const markdown = `## ✅ Formatted JSON
+  const truncated = formattedJson.length > PREVIEW_LIMIT;
+  const preview = truncated ? formattedJson.slice(0, PREVIEW_LIMIT) : formattedJson;
+  const heading = truncated
+    ? `## ✅ Formatted JSON — preview (first ${PREVIEW_LIMIT.toLocaleString()} of ${formattedJson.length.toLocaleString()} chars; press ⏎ to copy all)`
+    : "## ✅ Formatted JSON";
+
+  const markdown = `${heading}
 
 \`\`\`json
-${formattedJson}
+${preview}
 \`\`\``;
 
   return (
@@ -119,12 +129,7 @@ export default function Command() {
         </ActionPanel>
       }
     >
-      <Form.TextArea
-        ref={textAreaRef}
-        id="inputJson"
-        title="Input JSON"
-        placeholder="Paste your JSON here..."
-      />
+      <Form.TextArea ref={textAreaRef} id="inputJson" title="Input JSON" placeholder="Paste your JSON here..." />
 
       {error && <Form.Description title="❌ Error" text={error} />}
 

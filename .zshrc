@@ -18,11 +18,11 @@ GHWF() {
     local tmpfile=$(mktemp)
 
     # Pre-fetch workflows in background while user picks a branch
-    gh workflow list --limit 100 > "$tmpfile" &
+    gh workflow list --limit 999 > "$tmpfile" &
     local bg_pid=$!
 
     local selected_branch
-    selected_branch=$(git branch --list 'main*' 'master*' 'develop*' 'dev*' 'prod*' 'production*' 'staging*' 'feature*' 'release*' 'hotfix*' 'test*' | sed 's/^[* ] //' | sed 's|remotes/origin/||' | sort -u | fzf --border-label='Select branch')
+    selected_branch=$(git branch -a --format='%(refname:short)' | sed 's|^origin/||' | grep -Ev '^HEAD$' | grep -E '^(main|master|develop|dev|prod|production|staging|pre-staging|feature|release|hotfix|test)' | sort -u | fzf --border-label='Select branch')
 
     if [[ -z "$selected_branch" ]]; then
         kill $bg_pid 2>/dev/null
@@ -34,18 +34,20 @@ GHWF() {
     # Wait for workflow fetch to finish (likely already done)
     wait $bg_pid
 
-    local selected_files
-    selected_files=$(cat "$tmpfile" | fzf -m --preview='' | cut -f1)
+    local selected_workflows
+    selected_workflows=$(fzf -m --preview='' < "$tmpfile")
 
-    if [[ -z "$selected_files" ]]; then
+    if [[ -z "$selected_workflows" ]]; then
         rm -f "$tmpfile"
         echo "🚫 No workflow selected."
         return 1
     fi
 
-    for workflow_file in ${(f)selected_files}; do
-        echo "▶️ Running workflow '$workflow_file' on branch $selected_branch"
-        gh workflow run "$workflow_file" --ref "$selected_branch" &
+    for line in ${(f)selected_workflows}; do
+        local wf_name="${line%%$'\t'*}"
+        local wf_id="${line##*$'\t'}"
+        echo "▶️ Running workflow '$wf_name' on branch $selected_branch"
+        gh workflow run "$wf_id" --ref "$selected_branch" &
     done
     wait
     rm -f "$tmpfile"
@@ -310,5 +312,19 @@ alias now='echo $(( $(date +%s)*1000 + $(date +%N)/1000000 ))'
 alias ghwf=GHWF
 alias work=WORK
 alias openclaw='cd $HOME/Documents/code/openclaw && docker compose run --rm openclaw-cli'
-# Oracle Skills CLI
-export PATH="$HOME/.oracle-skills/bin:$PATH"
+alias claude='claude --dangerously-skip-permissions'
+alias codex='codex --yolo'
+alias antigravity='antigravity-ide'
+
+# Added by Antigravity IDE
+export PATH="/Users/p/.antigravity-ide/antigravity-ide/bin:$PATH"
+
+# Clean up inactive unattached tmux sessions in the background (older than 1 hour)
+if [ -z "$TMUX" ] && [ -x ~/.config/tmux/clean_sessions.sh ]; then
+    ~/.config/tmux/clean_sessions.sh &!
+fi
+
+# Auto-start tmux in interactive shells (except inside VS Code)
+# if [ -z "$TMUX" ] && [ "$TERM_PROGRAM" != "vscode" ] && [[ $- == *i* ]]; then
+#     exec tmux
+# fi
